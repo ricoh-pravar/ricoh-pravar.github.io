@@ -1,25 +1,532 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>ChatWidget Embed External Test</title>
-  <link rel="stylesheet" href="https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ricoh Assistant / ChatWidget SDK Test Page</title>
 
+  <!-- ChatWidget CSS (Local build or dev server) -->
+  <link rel="stylesheet" href="http://localhost:8080/chatwidget-bundle.css" onerror="this.href='https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.css'">
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+      padding: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #fff;
+      padding: 20px 24px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    .header p {
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 18px;
+      color: #1e293b;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #3b82f6;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #3b82f6;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #3b82f6;
+      color: #ffffff;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    button.btn-secondary {
+      background-color: #64748b;
+    }
+    button.btn-secondary:hover {
+      background-color: #475569;
+    }
+    button.btn-success {
+      background-color: #10b981;
+    }
+    button.btn-success:hover {
+      background-color: #059669;
+    }
+    button.btn-warning {
+      background-color: #f59e0b;
+    }
+    button.btn-warning:hover {
+      background-color: #d97706;
+    }
+    button.btn-danger {
+      background-color: #ef4444;
+    }
+    button.btn-danger:hover {
+      background-color: #dc2626;
+    }
+    .console-box {
+      background-color: #0f172a;
+      color: #38bdf8;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      padding: 14px;
+      border-radius: 6px;
+      height: 320px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log-time {
+      color: #64748b;
+    }
+    .log-event {
+      color: #a855f7;
+      font-weight: bold;
+    }
+    .log-info {
+      color: #38bdf8;
+    }
+    .log-warn {
+      color: #fbbf24;
+    }
+    .log-error {
+      color: #f87171;
+    }
+    .clear-btn {
+      float: right;
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #334155;
+      color: #94a3b8;
+    }
+    .clear-btn:hover {
+      background: #475569;
+      color: #fff;
+    }
+  </style>
 </head>
-
 <body>
-  <h1>🌐 External Website1</h1>
-  <p>Chat widget loaded via script</p>
 
-  <script src="https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.js"></script>
+  <div class="header">
+    <h1>RicohAssistant & ChatWidget SDK Test Suite</h1>
+    <p>Test all API methods, callbacks, state controls, and positioning live in browser.</p>
+  </div>
+
+  <div class="grid">
+    <!-- Left Column: Controls -->
+    <div>
+      <!-- Initialization Card -->
+      <div class="card">
+        <h2>1. Initialization</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="widgetId">Widget ID</label>
+            <input type="text" id="widgetId" value="demo-widget-001" placeholder="e.g. demo-widget-001">
+          </div>
+          <div class="form-group">
+            <label for="context">Context</label>
+            <input type="text" id="context" value="test-session-context" placeholder="e.g. user-session-123">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" value="Ricoh AI Assistant">
+          </div>
+          <div class="form-group">
+            <label for="buttonColor">Button Color</label>
+            <input type="text" id="buttonColor" value="#0066cc">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="initPosition">Default Corner</label>
+            <select id="initPosition">
+              <option value="bottom-right" selected>bottom-right</option>
+              <option value="bottom-left">bottom-left</option>
+              <option value="top-right">top-right</option>
+              <option value="top-left">top-left</option>
+            </select>
+          </div>
+          <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 20px;">
+            <input type="checkbox" id="defaultOpen" style="width: auto;">
+            <label for="defaultOpen" style="margin: 0; cursor: pointer;">Default Open</label>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="btn-success" onclick="testInit()">RicohAssistant.init(options)</button>
+          <button class="btn-secondary" onclick="testInitChatWidget()">window.initChatWidget(options)</button>
+        </div>
+      </div>
+
+      <!-- Visibility & Window Controls -->
+      <div class="card">
+        <h2>2. Visibility & Display Controls</h2>
+        <div class="button-group">
+          <button onclick="testOpen()">open()</button>
+          <button class="btn-secondary" onclick="testClose()">close()</button>
+          <button onclick="testToggle()">toggle()</button>
+          <button class="btn-success" onclick="testShow()">show()</button>
+          <button class="btn-warning" onclick="testHide()">hide()</button>
+        </div>
+        <div class="button-group" style="margin-top: 12px;">
+          <button class="btn-secondary" onclick="testMaximize()">maximize()</button>
+          <button class="btn-secondary" onclick="testMinimize()">minimize()</button>
+        </div>
+      </div>
+
+      <!-- Interaction & Messaging -->
+      <div class="card">
+        <h2>3. Interaction & Messaging</h2>
+        <div class="form-group">
+          <label for="msgText">Message Text</label>
+          <input type="text" id="msgText" value="Hello Ricoh Assistant! How can you help me today?">
+        </div>
+        <div class="button-group">
+          <button class="btn-success" onclick="testSendMessage()">sendMessage(text)</button>
+          <button class="btn-secondary" onclick="testEnable()">enable()</button>
+          <button class="btn-warning" onclick="testDisable()">disable()</button>
+          <button class="btn-danger" onclick="testReset()">reset()</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Positioning -->
+      <div class="card">
+        <h2>4. Position Controls</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="posSelect">Position</label>
+            <select id="posSelect">
+              <option value="bottom-right">bottom-right</option>
+              <option value="bottom-left">bottom-left</option>
+              <option value="top-right">top-right</option>
+              <option value="top-left">top-left</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="offsetBottom">Bottom / Top (px)</label>
+            <input type="number" id="offsetBottom" value="20">
+          </div>
+          <div class="form-group">
+            <label for="offsetRight">Right / Left (px)</label>
+            <input type="number" id="offsetRight" value="20">
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testSetPosition()">setPosition(position, offset)</button>
+          <button class="btn-secondary" onclick="testGetPosition()">getPosition()</button>
+        </div>
+      </div>
+
+      <!-- Status & Lifecycle -->
+      <div class="card">
+        <h2>5. Status & Lifecycle</h2>
+        <div class="button-group">
+          <button class="btn-secondary" onclick="testGetStatus()">getStatus()</button>
+          <button class="btn-secondary" onclick="testGetState()">getState()</button>
+          <button class="btn-danger" onclick="testDestroy()">destroy()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Event Log Console -->
+    <div>
+      <div class="card">
+        <button class="clear-btn" onclick="clearLogs()">Clear Console</button>
+        <h2>Live Event & Output Console</h2>
+        <div id="console" class="console-box">Logs and callback events will appear here...\n</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ChatWidget JS Bundle -->
+  <script src="http://localhost:8080/chatwidget-bundle.js" onerror="this.src='https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.js'"></script>
+
+  <!-- Control Script -->
   <script>
-        window.RicohAssistant.init({
-          widgetId: 'widget_ms7ohh3l_fu8cwdsj', 
-          context: null
-        })
+    function getTimestamp() {
+      const now = new Date();
+      return now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+    }
+
+    function log(type, message, data = null) {
+      const consoleEl = document.getElementById('console');
+      let classCss = 'log-info';
+      if (type === 'EVENT') classCss = 'log-event';
+      if (type === 'WARN') classCss = 'log-warn';
+      if (type === 'ERROR') classCss = 'log-error';
+
+      let formattedData = '';
+      if (data !== null && data !== undefined) {
+        try {
+          formattedData = ' -> ' + JSON.stringify(data, null, 2);
+        } catch (e) {
+          formattedData = ' -> ' + String(data);
+        }
+      }
+
+      const logLine = `[<span class="log-time">${getTimestamp()}</span>] <span class="${classCss}">${type}</span>: ${message}${formattedData}\n`;
+      consoleEl.innerHTML += logLine;
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function clearLogs() {
+      document.getElementById('console').innerHTML = '';
+    }
+
+    function getFormOptions() {
+      return {
+        widgetId: document.getElementById('widgetId').value || 'demo-widget-001',
+        context: document.getElementById('context').value || 'test-context',
+        title: document.getElementById('title').value || 'Ricoh Assistant',
+        buttonColor: document.getElementById('buttonColor').value || '#0066cc',
+        position: document.getElementById('initPosition').value || 'bottom-right',
+        defaultOpen: document.getElementById('defaultOpen').checked,
+        handlers: {
+          onInit: (data) => log('EVENT', 'Callback triggered: onInit', data),
+          onReady: (data) => log('EVENT', 'Callback triggered: onReady', data),
+          onOpen: () => log('EVENT', 'Callback triggered: onOpen'),
+          onClose: () => log('EVENT', 'Callback triggered: onClose'),
+          onDestroy: () => log('EVENT', 'Callback triggered: onDestroy')
+        }
+      };
+    }
+
+    function testInit() {
+      if (!window.RicohAssistant) {
+        log('ERROR', 'window.RicohAssistant is not available!');
+        return;
+      }
+      const options = getFormOptions();
+      log('INFO', 'Calling RicohAssistant.init(options)...', options);
+
+      const res = window.RicohAssistant.init(options);
+      if (res && typeof res.then === 'function') {
+        res.then((result) => {
+          log('INFO', 'RicohAssistant.init resolved:', result);
+        }).catch((err) => {
+          log('ERROR', 'RicohAssistant.init error:', err);
+        });
+      } else {
+        log('INFO', 'RicohAssistant.init returned:', res);
+      }
+    }
+
+    function testInitChatWidget() {
+      if (!window.initChatWidget) {
+        log('ERROR', 'window.initChatWidget is not available!');
+        return;
+      }
+      const options = getFormOptions();
+      log('INFO', 'Calling window.initChatWidget(null, options)...', options);
+      const res = window.initChatWidget(null, options);
+      log('INFO', 'window.initChatWidget returned:', res);
+    }
+
+    function testOpen() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.open()');
+      const res = window.RicohAssistant.open();
+      log('INFO', 'Result:', res);
+    }
+
+    function testClose() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.close()');
+      const res = window.RicohAssistant.close();
+      log('INFO', 'Result:', res);
+    }
+
+    function testToggle() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.toggle()');
+      const res = window.RicohAssistant.toggle();
+      log('INFO', 'Result:', res);
+    }
+
+    function testShow() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.show()');
+      const res = window.RicohAssistant.show();
+      log('INFO', 'Result:', res);
+    }
+
+    function testHide() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.hide()');
+      const res = window.RicohAssistant.hide();
+      log('INFO', 'Result:', res);
+    }
+
+    function testMaximize() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.maximize()');
+      const res = window.RicohAssistant.maximize();
+      log('INFO', 'Result:', res);
+    }
+
+    function testMinimize() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.minimize()');
+      const res = window.RicohAssistant.minimize();
+      log('INFO', 'Result:', res);
+    }
+
+    function testEnable() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.enable()');
+      const res = window.RicohAssistant.enable();
+      log('INFO', 'Result:', res);
+    }
+
+    function testDisable() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.disable()');
+      const res = window.RicohAssistant.disable();
+      log('INFO', 'Result:', res);
+    }
+
+    function testReset() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.reset()');
+      const res = window.RicohAssistant.reset();
+      log('INFO', 'Result:', res);
+    }
+
+    function testSendMessage() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      const text = document.getElementById('msgText').value;
+      log('INFO', `Calling RicohAssistant.sendMessage("${text}")`);
+      const res = window.RicohAssistant.sendMessage(text);
+      log('INFO', 'Result:', res);
+    }
+
+    function testSetPosition() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      const pos = document.getElementById('posSelect').value;
+      const b = parseInt(document.getElementById('offsetBottom').value) || 20;
+      const r = parseInt(document.getElementById('offsetRight').value) || 20;
+
+      const offset = pos.includes('bottom') ? { bottom: b } : { top: b };
+      if (pos.includes('right')) offset.right = r; else offset.left = r;
+
+      log('INFO', `Calling RicohAssistant.setPosition("${pos}", offset)`, offset);
+      const res = window.RicohAssistant.setPosition(pos, offset);
+      log('INFO', 'Result:', res);
+    }
+
+    function testGetPosition() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.getPosition()');
+      const res = window.RicohAssistant.getPosition();
+      log('INFO', 'Current Position:', res);
+    }
+
+    function testGetStatus() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.getStatus()');
+      const res = window.RicohAssistant.getStatus();
+      log('INFO', 'Current Status:', res);
+    }
+
+    function testGetState() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.getState()');
+      const res = window.RicohAssistant.getState();
+      log('INFO', 'Current State:', res);
+    }
+
+    function testDestroy() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('WARN', 'Calling RicohAssistant.destroy()');
+      const res = window.RicohAssistant.destroy();
+      log('INFO', 'Result:', res);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      log('INFO', 'Page loaded. Waiting for ChatWidget bundle to initialize...');
+      setTimeout(() => {
+        if (window.RicohAssistant || window.initChatWidget) {
+          log('INFO', 'SDK Available! Click "RicohAssistant.init(options)" to initialize widget.');
+        } else {
+          log('WARN', 'SDK Bundle not detected on page yet. Ensure bundle build is served.');
+        }
+      }, 300);
+    });
   </script>
 </body>
-
 </html>
+
