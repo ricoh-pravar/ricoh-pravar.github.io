@@ -6,7 +6,7 @@
   <title>Ricoh Assistant / ChatWidget SDK Test Page</title>
 
   <!-- ChatWidget CSS (Local build or dev server) -->
-  <link rel="stylesheet" href="http://localhost:8080/chatwidget-bundle.css" onerror="this.href='https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.css'">
+  <link rel="stylesheet" href="./build/chatwidget-bundle.css" onerror="this.href='http://localhost:8080/chatwidget-bundle.css'">
 
   <style>
     * {
@@ -71,7 +71,7 @@
       color: #475569;
       margin-bottom: 4px;
     }
-    .form-group input, .form-group select {
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 8px 12px;
       border: 1px solid #cbd5e1;
@@ -79,8 +79,9 @@
       font-size: 14px;
       outline: none;
       transition: border-color 0.2s;
+      font-family: inherit;
     }
-    .form-group input:focus, .form-group select:focus {
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       border-color: #3b82f6;
     }
     .form-row {
@@ -191,15 +192,13 @@
       <!-- Initialization Card -->
       <div class="card">
         <h2>1. Initialization</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="widgetId">Widget ID</label>
-            <input type="text" id="widgetId" value="demo-widget-001" placeholder="e.g. demo-widget-001">
-          </div>
-          <div class="form-group">
-            <label for="context">Context</label>
-            <input type="text" id="context" value="test-session-context" placeholder="e.g. user-session-123">
-          </div>
+        <div class="form-group">
+          <label for="widgetId">Widget ID</label>
+          <input type="text" id="widgetId" value="widget_ms7ohh3l_fu8cwdsj" placeholder="e.g. demo-widget-001">
+        </div>
+        <div class="form-group">
+          <label for="context">Context (JSON Object or null)</label>
+          <textarea id="context" rows="2" placeholder="null"></textarea>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -207,8 +206,8 @@
             <input type="text" id="title" value="Ricoh AI Assistant">
           </div>
           <div class="form-group">
-            <label for="buttonColor">Button Color</label>
-            <input type="text" id="buttonColor" value="#0066cc">
+            <label for="themeColor">Theme Color / Color</label>
+            <input type="text" id="themeColor" value="#d9001b">
           </div>
         </div>
         <div class="form-row">
@@ -313,7 +312,7 @@
   </div>
 
   <!-- ChatWidget JS Bundle -->
-  <script src="http://localhost:8080/chatwidget-bundle.js" onerror="this.src='https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.js'"></script>
+  <script src="./build/chatwidget-bundle.js" onerror="this.src='http://localhost:8080/chatwidget-bundle.js'"></script>
 
   <!-- Control Script -->
   <script>
@@ -348,11 +347,26 @@
     }
 
     function getFormOptions() {
+      let contextObj = null;
+      const rawContext = document.getElementById('context').value.trim();
+      if (rawContext && rawContext !== 'null') {
+        try {
+          contextObj = JSON.parse(rawContext);
+        } catch (e) {
+          log('WARN', 'Context input is not valid JSON, using object with text', e.message);
+          contextObj = { text: rawContext };
+        }
+      }
+
+      const colorVal = document.getElementById('themeColor').value.trim() || '#d9001b';
+
       return {
         widgetId: document.getElementById('widgetId').value || 'demo-widget-001',
-        context: document.getElementById('context').value || 'test-context',
+        context: contextObj,
         title: document.getElementById('title').value || 'Ricoh Assistant',
-        buttonColor: document.getElementById('buttonColor').value || '#0066cc',
+        themeColor: colorVal,
+        color: colorVal,
+        buttonColor: colorVal,
         position: document.getElementById('initPosition').value || 'bottom-right',
         defaultOpen: document.getElementById('defaultOpen').checked,
         handlers: {
