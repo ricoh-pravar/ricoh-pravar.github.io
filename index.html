@@ -169,6 +169,11 @@
       background-color: #dc2626;
     }
 
+    .console-card {
+      position: sticky;
+      top: 20px;
+    }
+
     .console-box {
       background-color: #0f172a;
       color: #38bdf8;
@@ -176,7 +181,8 @@
       font-size: 13px;
       padding: 14px;
       border-radius: 6px;
-      height: 320px;
+      height: calc(100vh - 120px);
+      min-height: 350px;
       overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-all;
@@ -357,10 +363,10 @@
 
     <!-- Right Column: Event Log Console -->
     <div>
-      <div class="card">
+      <div class="card console-card">
         <button class="clear-btn" onclick="clearLogs()">Clear Console</button>
         <h2>Live Event & Output Console</h2>
-        <div id="console" class="console-box">Logs and callback events will appear here...\n</div>
+        <div id="console" class="console-box">Logs and callback events will appear here...</div>
       </div>
     </div>
   </div>
