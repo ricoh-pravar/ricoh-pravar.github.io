@@ -8,7 +8,6 @@
 
   <!-- ChatWidget CSS -->
   <link rel="stylesheet" href="https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.css">
-
   <style>
     * {
       box-sizing: border-box;
@@ -234,11 +233,28 @@
         <h2>1. Initialization</h2>
         <div class="form-group">
           <label for="widgetId">Widget ID</label>
-          <input type="text" id="widgetId" value="widget_ms7ohh3l_fu8cwdsj" placeholder="e.g. demo-widget-001">
+          <input type="text" id="widgetId" value="1da377a1-de13-4744-8a8e-737430fcda9f"
+            placeholder="e.g. demo-widget-001">
         </div>
         <div class="form-group">
           <label for="context">Context (JSON Object or null)</label>
-          <textarea id="context" rows="2" placeholder="null"></textarea>
+          <textarea id="context" rows="12" placeholder="null">{
+            "session_id": "abc123",
+            "country": "US",
+            "language": "en",
+            "page_type": "PDP",
+            "product_name": "IM 2510",
+            "product_family": "IM Series",
+            "category": "Printers and Copiers",
+            "subcategory": "Multifunction Printers/Copiers",
+            "product_type": "Black and White Laser Multifunction Printer",
+            "user_actions": [
+              "view_product",
+              "view_specifications",
+              "download_brochure"
+            ],
+            "intent_type": "research"
+          }</textarea>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -246,8 +262,8 @@
             <input type="text" id="title" value="Ricoh AI Assistant">
           </div>
           <div class="form-group">
-            <label for="themeColor">Theme Color / Color</label>
-            <input type="text" id="themeColor" value="#d9001b">
+            <label for="color">Color</label>
+            <input type="text" id="color" value="#d9001b">
           </div>
         </div>
         <div class="form-row">
@@ -267,7 +283,6 @@
         </div>
         <div class="button-group">
           <button class="btn-success" onclick="testInit()">RicohAssistant.init(options)</button>
-          <button class="btn-secondary" onclick="testInitChatWidget()">window.initChatWidget(options)</button>
         </div>
       </div>
 
@@ -334,7 +349,6 @@
       <div class="card">
         <h2>5. Status & Lifecycle</h2>
         <div class="button-group">
-          <button class="btn-secondary" onclick="testGetStatus()">getStatus()</button>
           <button class="btn-secondary" onclick="testGetState()">getState()</button>
           <button class="btn-danger" onclick="testDestroy()">destroy()</button>
         </div>
@@ -398,15 +412,11 @@
         }
       }
 
-      const colorVal = document.getElementById('themeColor').value.trim() || '#d9001b';
-
       return {
         widgetId: document.getElementById('widgetId').value || 'demo-widget-001',
         context: contextObj,
         title: document.getElementById('title').value || 'Ricoh Assistant',
-        themeColor: colorVal,
-        color: colorVal,
-        buttonColor: colorVal,
+        color: document.getElementById('color').value.trim() || '#d9001b',
         position: document.getElementById('initPosition').value || 'bottom-right',
         defaultOpen: document.getElementById('defaultOpen').checked,
         handlers: {
@@ -439,16 +449,7 @@
       }
     }
 
-    function testInitChatWidget() {
-      if (!window.initChatWidget) {
-        log('ERROR', 'window.initChatWidget is not available!');
-        return;
-      }
-      const options = getFormOptions();
-      log('INFO', 'Calling window.initChatWidget(null, options)...', options);
-      const res = window.initChatWidget(null, options);
-      log('INFO', 'window.initChatWidget returned:', res);
-    }
+
 
     function testOpen() {
       if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
@@ -549,13 +550,6 @@
       log('INFO', 'Current Position:', res);
     }
 
-    function testGetStatus() {
-      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
-      log('INFO', 'Calling RicohAssistant.getStatus()');
-      const res = window.RicohAssistant.getStatus();
-      log('INFO', 'Current Status:', res);
-    }
-
     function testGetState() {
       if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
       log('INFO', 'Calling RicohAssistant.getState()');
@@ -573,7 +567,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       log('INFO', 'Page loaded. Waiting for ChatWidget bundle to initialize...');
       setTimeout(() => {
-        if (window.RicohAssistant || window.initChatWidget) {
+        if (window.RicohAssistant) {
           log('INFO', 'SDK Available! Click "RicohAssistant.init(options)" to initialize widget.');
         } else {
           log('WARN', 'SDK Bundle not detected on page yet. Ensure bundle build is served.');
