@@ -7,7 +7,8 @@
   <title>Ricoh Assistant / ChatWidget SDK Test Page</title>
 
   <!-- ChatWidget CSS -->
-  <link rel="stylesheet" href="https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.css">
+  <link rel="stylesheet" href="https://genaientdevs.ricoh-usa.com/studio/ricoh-assistant.css">
+
   <style>
     * {
       box-sizing: border-box;
@@ -287,6 +288,20 @@
             <label for="defaultOpen" style="margin: 0; cursor: pointer;">Default Open</label>
           </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="initWidth">Width (px) - Min: 300</label>
+            <input type="number" id="initWidth" value="430" min="300">
+          </div>
+          <div class="form-group">
+            <label for="initHeight">Height (px) - Min: 400</label>
+            <input type="number" id="initHeight" value="530" min="400">
+          </div>
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="showBubble" checked style="width: auto;">
+          <label for="showBubble" style="margin: 0; cursor: pointer;">Show Bubble (FAB Button)</label>
+        </div>
         <div class="button-group">
           <button class="btn-success" onclick="testInit()">RicohAssistant.init(options)</button>
         </div>
@@ -349,9 +364,30 @@
         </div>
       </div>
 
+      <!-- Dimensions (NEW) -->
+      <div class="card">
+        <h2>5. Dimensions (NEW)</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="widgetWidth">Width (px) - Min: 300</label>
+            <input type="number" id="widgetWidth" value="430" min="300">
+          </div>
+          <div class="form-group">
+            <label for="widgetHeight">Height (px) - Min: 400</label>
+            <input type="number" id="widgetHeight" value="530" min="400">
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testSetDimensions()">setDimensions(width, height)</button>
+          <button class="btn-secondary" onclick="testGetDimensions()">getDimensions()</button>
+          <button class="btn-secondary" onclick="testPresetSmall()">Small (350x500)</button>
+          <button class="btn-secondary" onclick="testPresetLarge()">Large (600x800)</button>
+        </div>
+      </div>
+
       <!-- Status & Lifecycle -->
       <div class="card">
-        <h2>5. Status & Lifecycle</h2>
+        <h2>6. Status & Lifecycle</h2>
         <div class="button-group">
           <button class="btn-secondary" onclick="testGetState()">getState()</button>
           <button class="btn-danger" onclick="testDestroy()">destroy()</button>
@@ -370,7 +406,7 @@
   </div>
 
   <!-- ChatWidget JS Bundle -->
-  <script src="https://genaientdevs.ricoh-usa.com/studio/chatwidget-bundle.js"></script>
+  <script src="https://genaientdevs.ricoh-usa.com/studio/ricoh-assistant-sdk.min.js"></script>
 
 
   <!-- Control Script -->
@@ -424,6 +460,9 @@
         color: document.getElementById('color').value.trim() || '#d9001b',
         position: document.getElementById('initPosition').value || 'bottom-right',
         defaultOpen: document.getElementById('defaultOpen').checked,
+        width: parseInt(document.getElementById('initWidth').value) || 430,
+        height: parseInt(document.getElementById('initHeight').value) || 530,
+        showBubble: document.getElementById('showBubble').checked,
         handlers: {
           onInit: (data) => log('EVENT', 'Callback triggered: onInit', data),
           onReady: (data) => log('EVENT', 'Callback triggered: onReady', data),
@@ -566,6 +605,41 @@
       if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
       log('WARN', 'Calling RicohAssistant.destroy()');
       const res = window.RicohAssistant.destroy();
+      log('INFO', 'Result:', res);
+    }
+
+    // NEW: Dimension control functions
+    function testSetDimensions() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      const width = parseInt(document.getElementById('widgetWidth').value) || 430;
+      const height = parseInt(document.getElementById('widgetHeight').value) || 530;
+      log('INFO', `Calling RicohAssistant.setDimensions(${width}, ${height})`);
+      const res = window.RicohAssistant.setDimensions(width, height);
+      log('INFO', 'Result:', res);
+    }
+
+    function testGetDimensions() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Calling RicohAssistant.getDimensions()');
+      const res = window.RicohAssistant.getDimensions();
+      log('INFO', 'Current Dimensions:', res);
+    }
+
+    function testPresetSmall() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Setting preset: Small (350x500)');
+      const res = window.RicohAssistant.setDimensions(350, 500);
+      document.getElementById('widgetWidth').value = 350;
+      document.getElementById('widgetHeight').value = 500;
+      log('INFO', 'Result:', res);
+    }
+
+    function testPresetLarge() {
+      if (!window.RicohAssistant) return log('ERROR', 'RicohAssistant not ready');
+      log('INFO', 'Setting preset: Large (600x800)');
+      const res = window.RicohAssistant.setDimensions(600, 800);
+      document.getElementById('widgetWidth').value = 600;
+      document.getElementById('widgetHeight').value = 800;
       log('INFO', 'Result:', res);
     }
 
