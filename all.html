@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Legal Documents</title>
+  <style>
+    :root {
+      --brand: #b5111b;
+      --text: #1f2328;
+      --muted: #5b6470;
+      --border: #e3e6ea;
+      --bg: #f7f8fa;
+      --prod: #0f7b3f;
+      --qa: #b8860b;
+      --dev: #1f5fa9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 72px;
+    }
+
+    header {
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      line-height: 1.25;
+    }
+
+    .lede {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 28px 0 20px;
+    }
+
+    .filter {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .filter:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    .filter[aria-pressed="true"] {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 18px rgba(16, 24, 40, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .card[hidden] {
+      display: none;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .env {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+      word-break: break-word;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eef1f5;
+      color: var(--muted);
+    }
+
+    .badge.prod {
+      background: #e6f4ec;
+      color: var(--prod);
+    }
+
+    .badge.qa {
+      background: #fdf3d9;
+      color: var(--qa);
+    }
+
+    .badge.dev {
+      background: #e8f0fa;
+      color: var(--dev);
+    }
+
+    .desc {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .links a {
+      flex: 1 1 auto;
+      text-align: center;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .links a:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: #fff5f5;
+    }
+
+    .links a.primary {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
+    .links a.primary:hover {
+      background: #9c0e17;
+      border-color: #9c0e17;
+      color: #fff;
+    }
+
+    .empty {
+      display: none;
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      background: #fff;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <h1>Legal Documents</h1>
+      <p class="lede">
+        Choose an environment below to open its documents.
+      </p>
+    </header>
+
+    <div class="filters" id="filters" role="group" aria-label="Filter by stage"></div>
+
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty">No environments match this filter.</div>
+
+    <footer>
+      <p class="small">
+        Showing <span id="count">0</span> documents. Add or edit entries in
+        the <code>DOCUMENTS</code> array inside this file.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // ---------------------------------------------------------------------
+    // EDIT HERE: one entry per environment.
+    //
+    //   file        - html file name in this same folder (required).
+    //                 The card links straight to it, e.g. "terms-of-use.html".
+    //   title       - card heading; falls back to a prettified file name
+    //   description - optional line of context
+    //   stage       - "dev" | "qa" | "prod" (used for the badge + filter)
+    // ---------------------------------------------------------------------
+    var DOCUMENTS = [
+      // ---- DEV ----
+      { file: "dmz-dev-rpa.html",    title: "DMZ DEV — RPA",   stage: "dev",  description: "Dev environment, DMZ deployment, RPA stack." },
+      { file: "genai-dev-rpa.html",  title: "GenAI DEV — RPA", stage: "dev",  description: "Dev environment, GenAI deployment, RPA stack." },
+      { file: "genai-dev-pka.html",  title: "GenAI DEV — PKA", stage: "dev",  description: "Dev environment, GenAI deployment, PKA stack." },
+      { file: "dmz-dev-pka.html",    title: "DMZ DEV — PKA",   stage: "dev",  description: "Dev environment, DMZ deployment, PKA stack." },
+
+      // ---- QA ----
+      { file: "dmz-qa-rpa.html",     title: "DMZ QA — RPA",    stage: "qa",   description: "QA environment, DMZ deployment, RPA stack." },
+      { file: "genai-qa-rpa.html",   title: "GenAI QA — RPA",  stage: "qa",   description: "QA environment, GenAI deployment, RPA stack." },
+      { file: "genai-qa-pka.html",   title: "GenAI QA — PKA",  stage: "qa",   description: "QA environment, GenAI deployment, PKA stack." },
+      { file: "dmz-qa-pka.html",     title: "DMZ QA — PKA",    stage: "qa",   description: "QA environment, DMZ deployment, PKA stack." },
+
+      // ---- QA (PRO) ----
+      { file: "dmz-pro-rpa.html",    title: "DMZ PRO — RPA",   stage: "qa",  description: "Pre-production environment, DMZ deployment, RPA stack." },
+      { file: "genai-pro-rpa.html",  title: "GenAI PRO — RPA", stage: "qa",  description: "Pre-production environment, GenAI deployment, RPA stack." },
+      { file: "genai-pro-pka.html",  title: "GenAI PRO — PKA", stage: "qa",  description: "Pre-production environment, GenAI deployment, PKA stack." },
+      { file: "dmz-pro-pka.html",    title: "DMZ PRO — PKA",   stage: "qa",  description: "Pre-production environment, DMZ deployment, PKA stack." },
+
+      // ---- PROD ----
+      { file: "dmz-prod-rpa.html",   title: "DMZ PROD — RPA",  stage: "prod", description: "Production environment, DMZ deployment, RPA stack." },
+      { file: "genai-prod-rpa.html", title: "GenAI PROD — RPA", stage: "prod", description: "Production environment, GenAI deployment, RPA stack." },
+      { file: "genai-prod-pka.html", title: "GenAI PROD — PKA", stage: "prod", description: "Production environment, GenAI deployment, PKA stack." },
+      { file: "dmz-prod-pka.html",   title: "DMZ PROD — PKA",  stage: "prod", description: "Production environment, DMZ deployment, PKA stack." },
+    ];
+
+    // Paths served by nginx for every environment (see nginx.conf).
+    var STAGE_LABELS = { prod: "Prod", qa: "QA", dev: "Dev" };
+
+    var grid = document.getElementById("grid");
+    var filters = document.getElementById("filters");
+    var empty = document.getElementById("empty");
+    var count = document.getElementById("count");
+
+    function el(tag, className, text) {
+      var node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text != null) node.textContent = text;
+      return node;
+    }
+
+    // "terms-of-use.html" -> "Terms Of Use"
+    function prettyName(file) {
+      return String(file || "")
+        .replace(/\.html?$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, function (c) {
+          return c.toUpperCase();
+        });
+    }
+
+    function renderCard(doc) {
+      var card = el("article", "card");
+      card.dataset.stage = doc.stage || "";
+
+      var top = el("div", "card-top");
+      top.appendChild(el("h2", "env", doc.title || prettyName(doc.file)));
+      top.appendChild(
+        el("span", "badge " + (doc.stage || ""), STAGE_LABELS[doc.stage] || doc.stage || "")
+      );
+      card.appendChild(top);
+
+      if (doc.description) {
+        card.appendChild(el("p", "desc", doc.description));
+      }
+
+      var links = el("div", "links");
+      var a = el("a", "primary", "Open");
+      a.href = doc.file;
+      a.title = doc.file;
+      links.appendChild(a);
+      card.appendChild(links);
+
+      return card;
+    }
+
+    function render(stageFilter) {
+      grid.innerHTML = "";
+
+      var shown = DOCUMENTS.filter(function (doc) {
+        return !stageFilter || stageFilter === "all" || doc.stage === stageFilter;
+      });
+
+      shown.forEach(function (doc) {
+        grid.appendChild(renderCard(doc));
+      });
+
+      empty.style.display = shown.length ? "none" : "block";
+      count.textContent = String(shown.length);
+    }
+
+    function buildFilters() {
+      var stages = [];
+      DOCUMENTS.forEach(function (doc) {
+        if (doc.stage && stages.indexOf(doc.stage) === -1) stages.push(doc.stage);
+      });
+
+      var options = [{ value: "all", label: "All" }].concat(
+        stages.map(function (stage) {
+          return { value: stage, label: STAGE_LABELS[stage] || stage };
+        })
+      );
+
+      options.forEach(function (option, index) {
+        var button = el("button", "filter", option.label);
+        button.type = "button";
+        button.dataset.stage = option.value;
+        button.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+        button.addEventListener("click", function () {
+          Array.prototype.forEach.call(
+            filters.querySelectorAll(".filter"),
+            function (other) {
+              other.setAttribute("aria-pressed", String(other === button));
+            }
+          );
+          render(option.value);
+        });
+        filters.appendChild(button);
+      });
+    }
+
+    buildFilters();
+    render("all");
+  </script>
+</body>
+
+</html>
